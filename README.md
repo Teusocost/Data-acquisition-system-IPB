@@ -6,4 +6,4 @@ This project aims to develop an autonomous data acquisition system based on Inte
 
 An IoT architecture has been developed that contains detection layers, a network layer, a service layer and an interface layer. The codes presented in this repository refer to the "device", the "gateway", the "Node-red" and the "Grafana". the bellow figure shows an overview of the architecture.
 
-![system architecture ]("/IMAGES/arquiteture iot.png)
+![system architecture ]("/IMAGES/arquiteture_iot.png)
