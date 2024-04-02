@@ -1,0 +1,2023 @@
+[
+    {
+        "id": "d5133d8ebd591128",
+        "type": "tab",
+        "label": "Tese",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "776966f789738063",
+        "type": "mqtt in",
+        "z": "d5133d8ebd591128",
+        "name": "Device data",
+        "topic": "IPB/TESTE/TRACKER/01",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "e83ab265ddccc0b6",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 77,
+        "y": 662,
+        "wires": [
+            [
+                "5b921cc8c65b0187",
+                "1f7511aa7c22ce90",
+                "4a73456c50c4cfba",
+                "6501b05d5551870d"
+            ]
+        ]
+    },
+    {
+        "id": "a05df31cea322ba7",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Organize current data",
+        "func": "var lat = msg.payload.latitude;\nvar long = msg.payload.longitude;\nvar vel = msg.payload.vel;\nvar temp = msg.payload.temperatura;\nvar humidade = msg.payload.umidade\nvar X = msg.payload.X;\nvar Y = msg.payload.Y;\nvar Z = msg.payload.Z;\nvar type = global.get(\"acellerometer_type\") || 0;\nvar bat_perc = msg.payload.Bat_Perc;\nvar rssi_lora = msg.payload.RSSI_LoRa;\nvar rssi_wifi = msg.payload.RSSI_WIFI;\n\n\n\nmsg.payload = [\n    {\n        measurement: \"gps\",\n        fields: {\n            latitude: lat,\n            longitude: long,\n            vel: vel,\n\n        },\n        tags: {\n            sensorID: \"L80\",\n            location: \"local_test\"\n        }\n    },\n    {\n        measurement: \"clime\",\n        fields: {\n            temp: temp,\n            hum: humidade\n\n        },\n        tags: {\n            sensorID: \"SHT21\",\n            location: \"local_test\"\n        }\n    },\n    {\n        measurement: \"system\",\n        fields: {\n            porcentagem: bat_perc\n        },\n        tags: {\n            sensorID: \"esp32\",\n            location: \"local_test\"\n        }\n    },\n    {\n        measurement: \"gateway\",\n        fields: {\n            rssi_lora: rssi_lora,\n            rssi_wifi: rssi_wifi\n        },\n        tags: {\n            sensorID: \"esp32\",\n            location: \"local_test\"\n        }\n    },\n    {\n        measurement: \"Accelerometer\",\n        fields: {\n            x: X,\n            y: Y,\n            z: Z,\n            type: type\n\n        },\n        tags: {\n            sensorID: \"ADXL345\",\n            location: \"local_test\"\n        }\n    }\n];\n\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 613,
+        "y": 572,
+        "wires": [
+            [
+                "c5ab4ea1f79e7a54"
+            ]
+        ]
+    },
+    {
+        "id": "735e15a9353017df",
+        "type": "switch",
+        "z": "d5133d8ebd591128",
+        "name": "Loc null?",
+        "property": "payload.latitude",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            },
+            {
+                "t": "null"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 363,
+        "y": 610,
+        "wires": [
+            [
+                "a05df31cea322ba7",
+                "84a6278af8e658f7",
+                "5c21bb4191187096",
+                "eb5f93ac1db7c053"
+            ],
+            [
+                "8a9a7216606a550e"
+            ]
+        ]
+    },
+    {
+        "id": "5b921cc8c65b0187",
+        "type": "switch",
+        "z": "d5133d8ebd591128",
+        "name": "Time?",
+        "property": "payload.time",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "null"
+            },
+            {
+                "t": "nnull"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 234,
+        "y": 640,
+        "wires": [
+            [
+                "735e15a9353017df"
+            ],
+            [
+                "19c21fe2f02cb528"
+            ]
+        ]
+    },
+    {
+        "id": "19c21fe2f02cb528",
+        "type": "switch",
+        "z": "d5133d8ebd591128",
+        "name": "Loc null?",
+        "property": "payload.latitude",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nnull"
+            },
+            {
+                "t": "null"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 364,
+        "y": 673,
+        "wires": [
+            [
+                "26cfe43029c2f7b3",
+                "90e1a74717db3c72"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "26cfe43029c2f7b3",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Organize past data",
+        "func": "var lat = msg.payload.latitude;\nvar long = msg.payload.longitude;\nvar vel = msg.payload.vel;\nvar temp = msg.payload.temperatura;\nvar humidade = msg.payload.umidade\nvar X = msg.payload.X\nvar Y = msg.payload.Y\nvar Z = msg.payload.Z\nvar type = global.get(\"acellerometer_type\") || 0;\nvar bat_perc = msg.payload.Bat_Perc;\nvar rssi_lora = msg.payload.RSSI_LoRa;\nvar rssi_wifi = msg.payload.RSSI_WIFI;\n//tratamento de tempo:\nvar time = msg.payload.time;            //formato RFC3339var \ntime = time.toString();                 //transforma em string para processar\nvar year = global.get(\"year\") || 2024;  //recolhe variavel global\nvar month = time.substr(0, 2);          // divide a string original\nvar day = time.substr(2, 2);            // divide a string original\nvar hour = time.substr(4, 2);           // divide a string original\nvar min = time.substr(6, 2);            // divide a string original\nvar timeUTC = `${year}-${month}-${day}T${hour}:${min}:00Z` // divide a string original\n\n\nmsg.payload = [\n    {\n        measurement: \"gps\",\n        timestamp: new Date(timeUTC), // Marca de tempo personalizada\n        fields: {\n            latitude: lat,\n            longitude: long,\n            vel: vel,\n        },\n        tags: {\n            sensorID: \"L80\",\n            location: \"local_test\"\n        }\n    },\n    {\n        measurement: \"clime\",\n        timestamp: new Date(timeUTC), // Marca de tempo personalizada\n        fields: {\n            temp: temp,\n            hum: humidade\n        },\n        tags: {\n            sensorID: \"SHT21\",\n            location: \"local_test\"\n        }\n    },\n    {\n        measurement: \"system\",\n        timestamp: new Date(timeUTC), // Marca de tempo personalizada\n        fields: {\n            porcentagem: bat_perc,\n        },\n        tags: {\n            sensorID: \"esp32\",\n            location: \"local_test\"\n        }\n    },\n    {\n        measurement: \"gateway\",\n        fields: {\n            rssi_lora: rssi_lora,\n            rssi_wifi: rssi_wifi\n        },\n        tags: {\n            sensorID: \"esp32\",\n            location: \"local_test\"\n        }\n    },\n    {\n        measurement: \"Accelerometer\",\n        timestamp: new Date(timeUTC), // Marca de tempo personalizada\n        fields: {\n            x: X,\n            y: Y,\n            z: Z,\n            type: type\n\n        },\n        tags: {\n            sensorID: \"ADXL345\",\n            location: \"local_test\"\n        }\n    }\n];\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 603,
+        "y": 692,
+        "wires": [
+            [
+                "dcff9c5e45a8f676",
+                "6291b87ada2d0544"
+            ]
+        ]
+    },
+    {
+        "id": "3001f41123d1118f",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "payload - callback",
+        "func": "msg.callback = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 255.00003814697266,
+        "y": 1198.000036239624,
+        "wires": [
+            [
+                "545f982d027968a8"
+            ]
+        ]
+    },
+    {
+        "id": "35fa38a511d0c84f",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Organize data",
+        "func": "// distribuir variaveis do payload em var locais\nvar lat = msg.payload[2]._value;\nvar long = msg.payload[3]._value;\nvar temp = msg.payload[1]._value + \" ºC\";\nvar hum = msg.payload[0]._value + \" %\";\nvar vel = msg.payload[4]._value + \" m/s\";\nvar battery = msg.payload[5]._value + \" %\";\nmsg.payload = {};\n\nif (msg.callback.content == \"1\") {\n    msg.payload.type = 'location';\n    msg.payload.content = { \"latitude\": lat, \"longitude\": long };\n}\nif (msg.callback.content == \"2\") {\n    msg.payload.type = 'message';\n    msg.payload.content = temp;\n}\nif (msg.callback.content == \"3\") {\n    msg.payload.type = 'message';\n    msg.payload.content = hum\n}\nif (msg.callback.content == \"4\") {\n    msg.payload.type = 'message';\n    msg.payload.content = vel;\n}\nif (msg.callback.content == \"5\") {\n    msg.payload.type = 'message';\n    msg.payload.content = battery;\n}\n\nmsg.payload.chatId = global.get(\"chatid_others\");\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 606.0001087188721,
+        "y": 1198.0001583099365,
+        "wires": [
+            [
+                "a1628eda6eaead4b"
+            ]
+        ]
+    },
+    {
+        "id": "24ab412cdfe8383e",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Last time",
+        "func": "// distribuir variaveis do payload em var locais\nvar hour = \"Last data registred ->\" + msg.payload[0]._time;\nmsg.payload = {};\nmsg.payload.type = 'message';\nmsg.payload.content = hour;\nmsg.payload.chatId = global.get(\"chatid_others\");\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 593.0000114440918,
+        "y": 1066.0000314712524,
+        "wires": [
+            [
+                "5f9945d22ce10e54"
+            ]
+        ]
+    },
+    {
+        "id": "1d65ee230a55b817",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Options?",
+        "func": "var opts = {\n    reply_markup: JSON.stringify({\n        \"inline_keyboard\": [[\n            {\n                \"text\": \"Location\",\n                \"callback_data\": \"1\"\n            },\n            {\n                \"text\": \"Temperature\",\n                \"callback_data\": \"2\"\n            },\n            {\n                \"text\": \"Humidity\",\n                \"callback_data\": \"3\"\n            },\n            {\n                \"text\": \"Velocity\",\n                \"callback_data\": \"4\"\n            },\n            {\n                \"text\": \"Battery\",\n                \"callback_data\": \"5\"\n            }\n            ]\n        ]\n    })\n};\n\nmsg.error = false;\n\nmsg.payload.content = 'Chose a data to query 🐐';\nmsg.payload.options = opts;\nmsg.payload.chatId = global.get(\"chatid_others\");\nmsg.payload.type = \"message\";\n\nreturn [msg];",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590.0000152587891,
+        "y": 1118.0000324249268,
+        "wires": [
+            [
+                "5f9945d22ce10e54"
+            ]
+        ]
+    },
+    {
+        "id": "c5ab4ea1f79e7a54",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 6",
+        "mode": "link",
+        "links": [
+            "d4aa3ceed38baacb"
+        ],
+        "x": 757.9999752044678,
+        "y": 567.9999885559082,
+        "wires": []
+    },
+    {
+        "id": "94a810c782168398",
+        "type": "link in",
+        "z": "d5133d8ebd591128",
+        "name": "link in 10",
+        "links": [
+            "83c5cdbe7279cbc8",
+            "eb5f93ac1db7c053"
+        ],
+        "x": 59.999993324279785,
+        "y": 1485.0000457763672,
+        "wires": [
+            [
+                "6eebae251f632d47",
+                "fa707982d40f7275"
+            ]
+        ]
+    },
+    {
+        "id": "6eebae251f632d47",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Temp",
+        "func": "var flag = global.get(\"flag_to_show_temperature\") || 0;\nvar temp = msg.payload.temperatura\nmsg.payload = {};\n\nif(temp > 35 && flag === 0){\n    global.set(\"flag_to_show_temperature\", 1); //para mudar a flag para -> utilizada\n    // organiza mensagem para enviar ao telegram\n    msg.payload.content = \"ATTENTION 🌡️☀️: The ambient temperature exceeded 35ºC, the animals may be in an inappropriate place.\";\n}\n\n\nif (temp < -10 && flag === 0){\n    global.set(\"flag_to_show_temperature\", 1); //para mudar a flag para -> utilizada\n    // organiza mensagem para enviar ao telegram\n    msg.payload.content = \"ATTENTION 🌡️☃️: The ambient temperature are down -10ºC, the animals may be in an inappropriate place.\";\n}\n\nmsg.payload.type = 'message';\nmsg.payload.chatId = global.get(\"chatid\");\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 152.99999618530273,
+        "y": 1465.0000448226929,
+        "wires": [
+            [
+                "945de3c1cb5348df"
+            ]
+        ]
+    },
+    {
+        "id": "d5cc096b4c3afccc",
+        "type": "change",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "flag_to_show_battery",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 350,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "337ef0d293e90f5c",
+        "type": "change",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "year",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0ce189fb2962c02a",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "data",
+        "func": "const date = new Date();\nconst year = date.getFullYear();\nmsg.payload = `${year}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 240,
+        "wires": [
+            [
+                "337ef0d293e90f5c"
+            ]
+        ]
+    },
+    {
+        "id": "cf6cc3bb1e56be75",
+        "type": "comment",
+        "z": "d5133d8ebd591128",
+        "name": "=============================ALERTAS=============================",
+        "info": "",
+        "x": 696.0000305175781,
+        "y": 1350.999948501587,
+        "wires": []
+    },
+    {
+        "id": "6a242eec7807cd19",
+        "type": "comment",
+        "z": "d5133d8ebd591128",
+        "name": "GLOBAL VARIABLES",
+        "info": "",
+        "x": 120,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "0e58ed649d0cac03",
+        "type": "comment",
+        "z": "d5133d8ebd591128",
+        "name": "=============================GLOBAL VARIABLES=============================",
+        "info": "",
+        "x": 730,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "e3663328ab226367",
+        "type": "comment",
+        "z": "d5133d8ebd591128",
+        "name": "=============================PROCESSING OF THE DATA=============================",
+        "info": "",
+        "x": 720,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "b70879e640c8b36c",
+        "type": "mqtt in",
+        "z": "d5133d8ebd591128",
+        "name": "Gateway status",
+        "topic": "IPB/TESTE/GATWAY/01",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "e83ab265ddccc0b6",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 86,
+        "y": 859.9999904632568,
+        "wires": [
+            [
+                "491380b8ebdf3f14",
+                "1e4327c2fc7c59ab"
+            ]
+        ]
+    },
+    {
+        "id": "491380b8ebdf3f14",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "put status",
+        "func": "\nmsg.payload = [{\n    measurement: \"gateway\",\n        fields: {\n            status: 1\n        },\n    tags: {\n        sensorID: \"gateway\",\n        location: \"local_test\"\n    }\n}];\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 254,
+        "y": 878.9999809265137,
+        "wires": [
+            [
+                "d01cf29ec8afa56c"
+            ]
+        ]
+    },
+    {
+        "id": "fa707982d40f7275",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Battery",
+        "func": "var flag = global.get(\"flag_to_show_battery\") || 0;\nvar bat = msg.payload.Bat_Perc;\nmsg.payload = {};\n\nif (bat <= 25 && flag === 0 && bat >= 15){\n    global.set(\"flag_to_show_battery\", 1); //para mudar a flag para -> utilizada\n    // organiza mensagem para enviar ao telegram\n    msg.payload.content = \"ATTENTION 🪫: The battery are down 25%, recharge as soon as possible!.\";\n}\n\n\nif (bat < 15 && flag === 0){\n    global.set(\"flag_to_show_battery\", 1); //para mudar a flag para -> utilizada\n    // organiza mensagem para enviar ao telegram\n    msg.payload.content = \"ATTENTION 🪫: The battery are down 15%, recharge as soon as possible!.\";\n}\n\nmsg.payload.type = 'message';\nmsg.payload.chatId = global.get(\"chatid\");\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 161.99999618530273,
+        "y": 1502.0000457763672,
+        "wires": [
+            [
+                "945de3c1cb5348df"
+            ]
+        ]
+    },
+    {
+        "id": "fe5d859951a85372",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Show global variables",
+        "func": "msg.payload = {};\nmsg.payload.past_locations = global.get(\"flag_to_show_past_location\");\nmsg.payload.battery = global.get(\"flag_to_show_battery\");\nmsg.payload.temperature = global.get(\"flag_to_show_temperature\");\nmsg.payload.year = global.get(\"year\") || null;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 160,
+        "wires": [
+            [
+                "a3e220be72b96963"
+            ]
+        ]
+    },
+    {
+        "id": "a3e220be72b96963",
+        "type": "debug",
+        "z": "d5133d8ebd591128",
+        "name": "debug 65",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1060,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "628115b671ba83c1",
+        "type": "inject",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "msg",
+        "x": 690,
+        "y": 160,
+        "wires": [
+            [
+                "fe5d859951a85372"
+            ]
+        ]
+    },
+    {
+        "id": "72da30c07f947d7f",
+        "type": "change",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "flag_to_show_temperature",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "243a1cc2dcdb6696",
+        "type": "comment",
+        "z": "d5133d8ebd591128",
+        "name": "Debug",
+        "info": "",
+        "x": 670,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "a65f03043db54910",
+        "type": "comment",
+        "z": "d5133d8ebd591128",
+        "name": "=============================BOT TELEGRAM=============================",
+        "info": "",
+        "x": 700,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "46ab2ee3b4a234a6",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Check point - current data",
+        "func": "var lat = global.get(\"lat\") || null;\nvar lon = global.get(\"lon\") || null;\nvar polygon = global.get(\"polygon\");\n\nfunction ray_casting(point, polygon) {\n    var n = polygon.length,\n        is_in = false,\n        x = point[0],\n        y = point[1],\n        x1, x2, y1, y2;\n\n    for (var i = 0; i < n - 1; ++i) {\n        x1 = polygon[i][0];\n        x2 = polygon[i + 1][0];\n        y1 = polygon[i][1];\n        y2 = polygon[i + 1][1];\n\n        if (y < y1 != y < y2 && x < (x2 - x1) * (y - y1) / (y2 - y1) + x1) {\n            is_in = !is_in;\n        }\n    }\n\n    return is_in;\n}\n\nif (ray_casting([lat, lon], polygon)) {\n    msg.payload = \"in\";\n}\nelse {\n    msg.payload = \"out\";\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 214.99999237060547,
+        "y": 1584.000023841858,
+        "wires": [
+            [
+                "0e1356f5b88ff601"
+            ]
+        ]
+    },
+    {
+        "id": "84a6278af8e658f7",
+        "type": "change",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "lat",
+                "pt": "global",
+                "to": "payload.latitude",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "lon",
+                "pt": "global",
+                "to": "payload.longitude",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 593,
+        "y": 532,
+        "wires": [
+            [
+                "fba61a88d0c633c5"
+            ]
+        ]
+    },
+    {
+        "id": "fba61a88d0c633c5",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 8",
+        "mode": "link",
+        "links": [
+            "c88f75505f6f14e1"
+        ],
+        "x": 759,
+        "y": 524,
+        "wires": []
+    },
+    {
+        "id": "c88f75505f6f14e1",
+        "type": "link in",
+        "z": "d5133d8ebd591128",
+        "name": "link in 12",
+        "links": [
+            "fba61a88d0c633c5"
+        ],
+        "x": 59.99999237060547,
+        "y": 1584.000023841858,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0e1356f5b88ff601",
+        "type": "switch",
+        "z": "d5133d8ebd591128",
+        "name": "in/out",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "out",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 402.99998474121094,
+        "y": 1584.0000476837158,
+        "wires": [
+            [
+                "32f2cf6b9e2e1b71"
+            ]
+        ]
+    },
+    {
+        "id": "32f2cf6b9e2e1b71",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Message",
+        "func": "msg.payload = {};\nmsg.payload.content = \"ATTENTION 📍🐐: The system has registered an abnormal location. Look at the map below to see where this location was registered. Use the heat map in the Dashboard to analyse this information.\";\nmsg.payload.chatId = global.get(\"chatid\");\nmsg.payload.type = 'message';\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 545.0000152587891,
+        "y": 1559.0000467300415,
+        "wires": [
+            [
+                "bee9af15daf50e45",
+                "93e697d7693c97b9",
+                "d0897f19ad2283b0"
+            ]
+        ]
+    },
+    {
+        "id": "93e697d7693c97b9",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Location",
+        "func": "var lat = global.get(\"lat\");\nvar long = global.get(\"lon\");\nmsg.payload.type = 'location';\nmsg.payload.content = { \"latitude\": lat, \"longitude\": long};\nmsg.payload.chatId = global.get(\"chatid\");\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 557.0000762939453,
+        "y": 1598.0000476837158,
+        "wires": [
+            [
+                "bee9af15daf50e45"
+            ]
+        ]
+    },
+    {
+        "id": "f11a6541315a92b5",
+        "type": "inject",
+        "z": "d5133d8ebd591128",
+        "name": "8h",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 08 * * *",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 90,
+        "y": 180,
+        "wires": [
+            [
+                "a566133b50a18797",
+                "0ce189fb2962c02a",
+                "d5cc096b4c3afccc",
+                "72da30c07f947d7f",
+                "783db8403c1718bc",
+                "13b01952e55bddeb"
+            ]
+        ]
+    },
+    {
+        "id": "a566133b50a18797",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Chatid",
+        "func": "msg.payload = \"6127341593\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 280,
+        "wires": [
+            [
+                "08276879de018701"
+            ]
+        ]
+    },
+    {
+        "id": "08276879de018701",
+        "type": "change",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "chatid",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 460,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "945de3c1cb5348df",
+        "type": "switch",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "property": "payload.content",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "nempty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 298.99998474121094,
+        "y": 1478.0000457763672,
+        "wires": [
+            [
+                "8a5b1a5edf9fe0ee",
+                "5130f0b3598791a0"
+            ]
+        ]
+    },
+    {
+        "id": "159d61208e910026",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Save alerts",
+        "func": "var lat = msg.payload\n\nmsg.payload = [\n    {\n        measurement: \"device\",\n        fields: {\n            alert: msg.payload.content\n\n        },\n        tags: {\n            sensorID: \"all\",\n            location: \"local_test\"\n        }\n    }\n];\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 169.00001525878906,
+        "y": 1834.0000276565552,
+        "wires": [
+            [
+                "f506a874a6a6d6c9"
+            ]
+        ]
+    },
+    {
+        "id": "ed183c3ced744462",
+        "type": "link in",
+        "z": "d5133d8ebd591128",
+        "name": "link in 13",
+        "links": [
+            "d0897f19ad2283b0",
+            "5130f0b3598791a0",
+            "1e41f0ebf219bd24",
+            "940e03e86f9bfceb",
+            "c11606f15e328a87",
+            "871cbc2e59633115"
+        ],
+        "x": 64.00001525878906,
+        "y": 1834.0000276565552,
+        "wires": [
+            [
+                "159d61208e910026"
+            ]
+        ]
+    },
+    {
+        "id": "d0897f19ad2283b0",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 9",
+        "mode": "link",
+        "links": [
+            "ed183c3ced744462"
+        ],
+        "x": 684.000018119812,
+        "y": 1550.0000467300415,
+        "wires": []
+    },
+    {
+        "id": "5130f0b3598791a0",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 10",
+        "mode": "link",
+        "links": [
+            "ed183c3ced744462"
+        ],
+        "x": 395.9999828338623,
+        "y": 1460.0000448226929,
+        "wires": []
+    },
+    {
+        "id": "5c21bb4191187096",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Current Data",
+        "func": "msg.payload = [\n    {\n        measurement: \"device\",\n        fields: {\n            package: \"Current data\"\n        },\n        tags: {\n            sensorID: \"all\",\n            location: \"local_test\"\n        }\n    }\n];\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 869,
+        "y": 589,
+        "wires": [
+            [
+                "3dc08073894d588e"
+            ]
+        ]
+    },
+    {
+        "id": "dcff9c5e45a8f676",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Memory data",
+        "func": "var time = new Date(msg.payload[0].timestamp).toLocaleString(\"pt-PT\", {\n    year: 'numeric', month: '2-digit', day: '2-digit',\n    hour: '2-digit', minute: '2-digit', second: '2-digit'\n});\nmsg.payload.time = time;\nmsg.payload = [\n        {\n            measurement: \"device\",\n            fields: {\n                package: \"Memory data -> \" + time\n            },\n            tags: {\n                sensorID: \"all\",\n                location: \"local_test\"\n            }\n        }\n    ];\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 869.9999771118164,
+        "y": 661.9999895095825,
+        "wires": [
+            [
+                "3dc08073894d588e"
+            ]
+        ]
+    },
+    {
+        "id": "f2fcec8acccd8776",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Device searching gateway",
+        "func": "msg.payload = [\n    {\n        measurement: \"device\",\n        fields: {\n            package: \"Device searching gateway\"\n        },\n        tags: {\n            sensorID: \"all\",\n            location: \"local_test\"\n        }\n    }\n];\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 909.0000762939453,
+        "y": 627.0000858306885,
+        "wires": [
+            [
+                "3dc08073894d588e"
+            ]
+        ]
+    },
+    {
+        "id": "90e1a74717db3c72",
+        "type": "change",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "lat_past",
+                "pt": "global",
+                "to": "payload.latitude",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "lon_past",
+                "pt": "global",
+                "to": "payload.longitude",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "time_past",
+                "pt": "global",
+                "to": "payload.time",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 593,
+        "y": 732,
+        "wires": [
+            [
+                "644d9cc873952e0b"
+            ]
+        ]
+    },
+    {
+        "id": "644d9cc873952e0b",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 12",
+        "mode": "link",
+        "links": [
+            "fca95b4d776656ba"
+        ],
+        "x": 759.0000267028809,
+        "y": 752.0000114440918,
+        "wires": []
+    },
+    {
+        "id": "77d0872cc2eaee7b",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Check point - past data",
+        "func": "var lat = global.get(\"lat_past\") || null;\nvar lon = global.get(\"lon_past\") || null;\nvar polygon = global.get(\"polygon\");                    // área definida a ser analisada\nvar flag = global.get(\"flag_to_show_past_location\")||0; //flag para libera envio de notifcação\n\nfunction ray_casting(point, polygon) {\n    var n = polygon.length,\n        is_in = false,\n        x = point[0],\n        y = point[1],\n        x1, x2, y1, y2;\n\n    for (var i = 0; i < n - 1; ++i) {\n        x1 = polygon[i][0];\n        x2 = polygon[i + 1][0];\n        y1 = polygon[i][1];\n        y2 = polygon[i + 1][1];\n\n        if (y < y1 != y < y2 && x < (x2 - x1) * (y - y1) / (y2 - y1) + x1) {\n            is_in = !is_in;\n        }\n    }\n\n    return is_in;\n}\n\nif (ray_casting([lat, lon], polygon)) {\n    msg.payload = \"in\";\n}\nelse {\n    if (flag == 0){\n        msg.payload = \"out\";\n    }\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 206.9999942779541,
+        "y": 1679.0000247955322,
+        "wires": [
+            [
+                "f81d7c11c1547745"
+            ]
+        ]
+    },
+    {
+        "id": "fca95b4d776656ba",
+        "type": "link in",
+        "z": "d5133d8ebd591128",
+        "name": "link in 14",
+        "links": [
+            "644d9cc873952e0b"
+        ],
+        "x": 61.9999942779541,
+        "y": 1679.0000247955322,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f81d7c11c1547745",
+        "type": "switch",
+        "z": "d5133d8ebd591128",
+        "name": "in/out",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "out",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 391.9999885559082,
+        "y": 1679.0000247955322,
+        "wires": [
+            [
+                "68584db083f62998"
+            ]
+        ]
+    },
+    {
+        "id": "68584db083f62998",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Message",
+        "func": "msg.payload = {};\nvar time = global.get(\"time_past\") || \"time indefined\";\n\ntime = time.toString();                 //transforma em string para processar\nvar month = time.substr(0, 2);          // divide a string original\nvar day = time.substr(2, 2);            // divide a string original\nvar hour = time.substr(4, 2);           // divide a string original\nvar min = time.substr(6, 2);            // divide a string original\nvar timeUTC = `${month}-${day} ${hour}:${min}:00` // divide a string original\n\nmsg.payload.content = \"ATTENTION 📍🐐: The system has registered an abnormal location at \" + timeUTC + \". Look at the map below to see where this location was registered. Use the heat map in the Dashboard to analyse this information.\";\nmsg.payload.chatId = global.get(\"chatid\");\nmsg.payload.type = 'message';\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 531.0000171661377,
+        "y": 1655.0000505447388,
+        "wires": [
+            [
+                "0d858a5c409d4bac",
+                "c11606f15e328a87",
+                "f3d083eec6fe3717"
+            ]
+        ]
+    },
+    {
+        "id": "c11606f15e328a87",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 13",
+        "mode": "link",
+        "links": [
+            "ed183c3ced744462"
+        ],
+        "x": 684.0000858306885,
+        "y": 1644.0000247955322,
+        "wires": []
+    },
+    {
+        "id": "f3d083eec6fe3717",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Location",
+        "func": "var lat = global.get(\"lat_past\");\nvar long = global.get(\"lon_past\");\nmsg.payload.type = 'location';\nmsg.payload.content = { \"latitude\": lat, \"longitude\": long};\nmsg.payload.chatId = global.get(\"chatid\");\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 546.000078201294,
+        "y": 1694.000051498413,
+        "wires": [
+            [
+                "0d858a5c409d4bac"
+            ]
+        ]
+    },
+    {
+        "id": "8a9a7216606a550e",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "save RSSI",
+        "func": "\nvar rssi_lora = msg.payload.RSSI_LoRa;\nvar rssi_wifi = msg.payload.RSSI_WIFI;\nvar bat_perc = msg.payload.Bat_Perc;\nmsg.payload = [\n    \n    {\n        measurement: \"gateway\",\n        fields: {\n            rssi_lora: rssi_lora,\n            rssi_wifi: rssi_wifi\n        },\n        tags: {\n            sensorID: \"esp32\",\n            location: \"local_test\"\n        }\n    },\n    {\n        measurement: \"system\",\n        fields: {\n            porcentagem: bat_perc\n        },\n        tags: {\n            sensorID: \"esp32\",\n            location: \"local_test\"\n        }\n    }\n];\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 584,
+        "y": 635,
+        "wires": [
+            [
+                "f2fcec8acccd8776",
+                "c14afeee8f450451"
+            ]
+        ]
+    },
+    {
+        "id": "d4aa3ceed38baacb",
+        "type": "link in",
+        "z": "d5133d8ebd591128",
+        "name": "link in 15",
+        "links": [
+            "c5ab4ea1f79e7a54",
+            "6291b87ada2d0544",
+            "d01cf29ec8afa56c",
+            "c14afeee8f450451",
+            "35ccb40b0c956f8f"
+        ],
+        "x": 1099.9999780654907,
+        "y": 664.9999895095825,
+        "wires": [
+            [
+                "201e9f716e168733"
+            ]
+        ]
+    },
+    {
+        "id": "6291b87ada2d0544",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 14",
+        "mode": "link",
+        "links": [
+            "d4aa3ceed38baacb"
+        ],
+        "x": 758,
+        "y": 712,
+        "wires": []
+    },
+    {
+        "id": "c14afeee8f450451",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 15",
+        "mode": "link",
+        "links": [
+            "978144ea8359ff16",
+            "d4aa3ceed38baacb"
+        ],
+        "x": 758,
+        "y": 653,
+        "wires": []
+    },
+    {
+        "id": "783db8403c1718bc",
+        "type": "change",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "flag_to_show_past_location",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 370,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f57e271d4940310f",
+        "type": "change",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "chatid_others",
+                "pt": "global",
+                "to": "payload.chatId",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 278.00000762939453,
+        "y": 1092.0000324249268,
+        "wires": [
+            [
+                "38d1035a03fb7ba9"
+            ]
+        ]
+    },
+    {
+        "id": "1e4327c2fc7c59ab",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "rssi_wifi",
+        "func": "var rssi_wifi = msg.payload.RSSI_WIFI;\n\nmsg.payload = [{\n    measurement: \"gateway\",\n    fields: {\n        rssi_wifi: rssi_wifi\n    },\n    tags: {\n        sensorID: \"esp32\",\n        location: \"local_test\"\n    }\n}];\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 254.00000381469727,
+        "y": 834.999981880188,
+        "wires": [
+            [
+                "d01cf29ec8afa56c"
+            ]
+        ]
+    },
+    {
+        "id": "d01cf29ec8afa56c",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 16",
+        "mode": "link",
+        "links": [
+            "374a6623e0f06369",
+            "d4aa3ceed38baacb"
+        ],
+        "x": 360.00000286102295,
+        "y": 859.999981880188,
+        "wires": []
+    },
+    {
+        "id": "3a2bce5e212a7559",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Coordinates filter",
+        "func": "// Seu arquivo de texto\nconst texto = msg.payload;\n\n// Encontre o trecho entre as tags <coordinates>\nconst coordenadas = texto.match(/<coordinates>(.*?)<\\/coordinates>/s);\n\nif (coordenadas) {\n    const dados = coordenadas[1].trim().split(' ');\n\n    // Processa os dados e cria pares [lat, lon]\n    const paresLatLon = dados.map((coord) => {\n        const partes = coord.split(',');\n        // Remove os \"0\" à direita das vírgulas\n        const lon = parseFloat(partes[0]);\n        const lat = parseFloat(partes[1]);\n        return [lat, lon];\n    });\n\n    msg.payload = paresLatLon;\n} else {\n    msg.payload = 'Trecho de coordenadas não encontrado no arquivo.';\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 320,
+        "wires": [
+            [
+                "9353da3f3851e8cc"
+            ]
+        ]
+    },
+    {
+        "id": "13b01952e55bddeb",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "KML file",
+        "func": "msg.payload = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n<Document>\n\t<name>Sem título</name>\n\t<gx:CascadingStyle kml:id=\"__managed_style_238EDD1E602D511876B5\">\n\t\t<Style>\n\t\t\t<IconStyle>\n\t\t\t\t<scale>1.2</scale>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>\n\t\t\t\t</Icon>\n\t\t\t\t<hotSpot x=\"64\" y=\"128\" xunits=\"pixels\" yunits=\"insetPixels\"/>\n\t\t\t</IconStyle>\n\t\t\t<LabelStyle>\n\t\t\t</LabelStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>ff9f3f30</color>\n\t\t\t\t<width>4.8</width>\n\t\t\t</LineStyle>\n\t\t\t<PolyStyle>\n\t\t\t\t<color>40ffffff</color>\n\t\t\t</PolyStyle>\n\t\t\t<BalloonStyle>\n\t\t\t\t<displayMode>hide</displayMode>\n\t\t\t</BalloonStyle>\n\t\t</Style>\n\t</gx:CascadingStyle>\n\t<gx:CascadingStyle kml:id=\"__managed_style_1927FA6F332D511876B5\">\n\t\t<Style>\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>\n\t\t\t\t</Icon>\n\t\t\t\t<hotSpot x=\"64\" y=\"128\" xunits=\"pixels\" yunits=\"insetPixels\"/>\n\t\t\t</IconStyle>\n\t\t\t<LabelStyle>\n\t\t\t</LabelStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>ff9f3f30</color>\n\t\t\t\t<width>3.2</width>\n\t\t\t</LineStyle>\n\t\t\t<PolyStyle>\n\t\t\t\t<color>40ffffff</color>\n\t\t\t</PolyStyle>\n\t\t\t<BalloonStyle>\n\t\t\t\t<displayMode>hide</displayMode>\n\t\t\t</BalloonStyle>\n\t\t</Style>\n\t</gx:CascadingStyle>\n\t<StyleMap id=\"__managed_style_00D1C233E32D511876B5\">\n\t\t<Pair>\n\t\t\t<key>normal</key>\n\t\t\t<styleUrl>#__managed_style_1927FA6F332D511876B5</styleUrl>\n\t\t</Pair>\n\t\t<Pair>\n\t\t\t<key>highlight</key>\n\t\t\t<styleUrl>#__managed_style_238EDD1E602D511876B5</styleUrl>\n\t\t</Pair>\n\t</StyleMap>\n\t<Placemark id=\"0B7D3AEA9D2D1EEB2EC7\">\n\t\t<name>Polígono sem título</name>\n\t\t<LookAt>\n\t\t\t<longitude>-6.767368273025492</longitude>\n\t\t\t<latitude>41.79729198678132</latitude>\n\t\t\t<altitude>682.9865470399917</altitude>\n\t\t\t<heading>40.13288014446513</heading>\n\t\t\t<tilt>39.78444018006078</tilt>\n\t\t\t<gx:fovy>35</gx:fovy>\n\t\t\t<range>1201.903989417624</range>\n\t\t\t<altitudeMode>absolute</altitudeMode>\n\t\t</LookAt>\n\t\t<styleUrl>#__managed_style_00D1C233E32D511876B5</styleUrl>\n\t\t<Polygon>\n\t\t\t<outerBoundaryIs>\n\t\t\t\t<LinearRing>\n\t\t\t\t\t<coordinates>\n\t\t\t\t\t\t-6.769515857838626,41.79885658643625,0 -6.770318368810831,41.79823927828824,0 -6.770763521829978,41.79694155188922,0 -6.769811573283917,41.79556119064422,0 -6.768390859009022,41.79459540148369,0 -6.767403798164903,41.79518237984895,0 -6.765892598773458,41.79598064615573,0 -6.76369058450773,41.79707699702205,0 -6.764319206821443,41.79840850057142,0 -6.765933857670367,41.79904462708071,0 -6.768145778727074,41.79879874181806,0 -6.769515857838626,41.79885658643625,0 \n\t\t\t\t\t</coordinates>\n\t\t\t\t</LinearRing>\n\t\t\t</outerBoundaryIs>\n\t\t</Polygon>\n\t</Placemark>\n</Document>\n</kml>\n`\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 320,
+        "wires": [
+            [
+                "3a2bce5e212a7559"
+            ]
+        ]
+    },
+    {
+        "id": "9353da3f3851e8cc",
+        "type": "change",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "polygon",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 690,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb5f93ac1db7c053",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 17",
+        "mode": "link",
+        "links": [
+            "94a810c782168398"
+        ],
+        "x": 759,
+        "y": 608,
+        "wires": []
+    },
+    {
+        "id": "62aaac126b68e1f0",
+        "type": "inject",
+        "z": "d5133d8ebd591128",
+        "name": "16h",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 16 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 90,
+        "y": 220,
+        "wires": [
+            [
+                "0ce189fb2962c02a",
+                "a566133b50a18797",
+                "13b01952e55bddeb",
+                "d5cc096b4c3afccc",
+                "72da30c07f947d7f",
+                "783db8403c1718bc"
+            ]
+        ]
+    },
+    {
+        "id": "ab6158b6e3f4b8d2",
+        "type": "inject",
+        "z": "d5133d8ebd591128",
+        "name": "00h",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 00 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "num",
+        "x": 90,
+        "y": 260,
+        "wires": [
+            [
+                "13b01952e55bddeb",
+                "a566133b50a18797",
+                "0ce189fb2962c02a",
+                "d5cc096b4c3afccc",
+                "72da30c07f947d7f",
+                "783db8403c1718bc"
+            ]
+        ]
+    },
+    {
+        "id": "201e9f716e168733",
+        "type": "influxdb batch",
+        "z": "d5133d8ebd591128",
+        "influxdb": "203d5530d5db7950",
+        "precision": "",
+        "retentionPolicy": "",
+        "name": "Save data",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "IPB",
+        "bucket": "IPB_TRACKER",
+        "x": 1191.9999771118164,
+        "y": 664.9999904632568,
+        "wires": []
+    },
+    {
+        "id": "f506a874a6a6d6c9",
+        "type": "influxdb batch",
+        "z": "d5133d8ebd591128",
+        "influxdb": "203d5530d5db7950",
+        "precision": "",
+        "retentionPolicy": "",
+        "name": "BD",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "IPB",
+        "bucket": "IPB_ALERT",
+        "x": 313.0000190734863,
+        "y": 1834.0000581741333,
+        "wires": []
+    },
+    {
+        "id": "3dc08073894d588e",
+        "type": "influxdb batch",
+        "z": "d5133d8ebd591128",
+        "influxdb": "203d5530d5db7950",
+        "precision": "",
+        "retentionPolicy": "",
+        "name": "Show in grafana",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "IPB",
+        "bucket": "IPB_ALERT",
+        "x": 1213,
+        "y": 623,
+        "wires": []
+    },
+    {
+        "id": "38d1035a03fb7ba9",
+        "type": "influxdb in",
+        "z": "d5133d8ebd591128",
+        "influxdb": "203d5530d5db7950",
+        "name": "BD",
+        "query": "from(bucket: \"IPB_TRACKER\")\n  |> range(start: -30d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"gps\")\n  |> filter(fn: (r) => r[\"_field\"] == \"latitude\")\n  |> last()\n  |> group(columns: [\"_measurement\"])\n  |> top(n: 3, columns: [\"_time\"])",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "IPB",
+        "x": 461.0000228881836,
+        "y": 1092.000117301941,
+        "wires": [
+            [
+                "24ab412cdfe8383e",
+                "1d65ee230a55b817"
+            ]
+        ]
+    },
+    {
+        "id": "545f982d027968a8",
+        "type": "influxdb in",
+        "z": "d5133d8ebd591128",
+        "influxdb": "203d5530d5db7950",
+        "name": "BD",
+        "query": "from(bucket: \"IPB_TRACKER\")\n  |> range(start: -30d)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\" or r[\"_measurement\"] == \"clime\" or r[\"_measurement\"] == \"gps\")\n  |> filter(fn: (r) => r[\"_field\"] == \"porcentagem\" or r[\"_field\"] == \"vel\" or r[\"_field\"] == \"temp\" or r[\"_field\"] == \"longitude\" or r[\"_field\"] == \"latitude\" or r[\"_field\"] == \"hum\")\n  |> last()\n  |> group(columns: [\"_measurement\"])\n  |> top(n: 3, columns: [\"_time\"])",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "IPB",
+        "x": 457.0001049041748,
+        "y": 1198.0001583099365,
+        "wires": [
+            [
+                "35fa38a511d0c84f"
+            ]
+        ]
+    },
+    {
+        "id": "06f6adfcaacce5e7",
+        "type": "telegram command",
+        "z": "d5133d8ebd591128",
+        "name": "Command",
+        "command": "/command1",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "scope": "default",
+        "bot": "ebf6f6f5ba0d66a8",
+        "strict": false,
+        "hasresponse": true,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 2,
+        "x": 71.00000381469727,
+        "y": 1121.0000343322754,
+        "wires": [
+            [
+                "f57e271d4940310f"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "802df3f8d41eda75",
+        "type": "telegram command",
+        "z": "d5133d8ebd591128",
+        "name": "Query",
+        "command": "/command1@Tese_gps_bot",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "scope": "default",
+        "bot": "ebf6f6f5ba0d66a8",
+        "strict": false,
+        "hasresponse": false,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 1,
+        "x": 63,
+        "y": 1068.0000324249268,
+        "wires": [
+            [
+                "f57e271d4940310f",
+                "1c64be726d5e1436"
+            ]
+        ]
+    },
+    {
+        "id": "a03a0ed0ba3b6d08",
+        "type": "telegram event",
+        "z": "d5133d8ebd591128",
+        "name": "Callback",
+        "bot": "ebf6f6f5ba0d66a8",
+        "event": "callback_query",
+        "autoanswer": false,
+        "x": 72.00000381469727,
+        "y": 1198.000036239624,
+        "wires": [
+            [
+                "3001f41123d1118f"
+            ]
+        ]
+    },
+    {
+        "id": "5f9945d22ce10e54",
+        "type": "telegram sender",
+        "z": "d5133d8ebd591128",
+        "name": "Send",
+        "bot": "ebf6f6f5ba0d66a8",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 739.0000152587891,
+        "y": 1090.0000324249268,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a1628eda6eaead4b",
+        "type": "telegram sender",
+        "z": "d5133d8ebd591128",
+        "name": "Send",
+        "bot": "ebf6f6f5ba0d66a8",
+        "haserroroutput": true,
+        "outputs": 2,
+        "x": 751.0001125335693,
+        "y": 1198.0001316070557,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "8a5b1a5edf9fe0ee",
+        "type": "telegram sender",
+        "z": "d5133d8ebd591128",
+        "name": "Send",
+        "bot": "ebf6f6f5ba0d66a8",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 431.99998474121094,
+        "y": 1494.0000457763672,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bee9af15daf50e45",
+        "type": "telegram sender",
+        "z": "d5133d8ebd591128",
+        "name": "Send",
+        "bot": "ebf6f6f5ba0d66a8",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 719.0000200271606,
+        "y": 1583.0000476837158,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0d858a5c409d4bac",
+        "type": "telegram sender",
+        "z": "d5133d8ebd591128",
+        "name": "Send",
+        "bot": "ebf6f6f5ba0d66a8",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 719.0000228881836,
+        "y": 1677.0000495910645,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1f7511aa7c22ce90",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Acellerometer define",
+        "func": "var X = msg.payload.X;\nvar Y = msg.payload.Y;\nvar Z = msg.payload.Z;\nvar type;\ndefine_type();\nfunction define_type() {\n    //top\n    if (X >= -3 && X < 3 &&\n        Y >= -2.5 && Y < 4.5 &&\n        Z >= 7 && Z < 11\n    ) type = 1;\n    else\n        if (X >= 4 && X < 12 &&\n            Y >= -2 && Y < 6 &&\n            Z >= -4 && Z < 7\n        ) type = 2;\n        else\n            if (X >= 9 && X < 12 &&\n                Y >= -3 && Y < 3 &&\n                Z >= -3 && Z < 1\n            ) type = 3;\n\n            //left\n            else\n                if (X >= -1 && X < 2 &&\n                    Y >= 3 && Y < 8 &&\n                    Z >= 4 && Z < 9\n                ) type = 4;\n                else\n                    if (X >= -1 && X < 2 &&\n                        Y >= 8 && Y < 12 &&\n                        Z >= -6 && Z < 5\n                    ) type = 5;\n                    else\n                        //behind\n                        if (X >= -9 && X < -3 &&\n                            Y >= -3 && Y < 3 &&\n                            Z >= 4 && Z < 7\n                        ) type = 6;\n                        else\n                            if (X >= -12 && X < 6 &&\n                                Y >= -1 && Y < 3 &&\n                                Z >= -2 && Z < 2\n                            ) type = 7;\n                            else\n                                //Riht\n                                if (X >= -1 && X < 3 &&\n                                    Y >= -6 && Y < 1 &&\n                                    Z >= 6 && Z < 12\n                                ) type = 8;\n                                else\n                                    if (X >= -2 && X < 2 &&\n                                        Y >= -12 && Y < -6 &&\n                                        Z >= 0 && Z < 6\n                                    ) type = 9;\n                                    else type = 0;\n}\nmsg.payload = type;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 613,
+        "y": 772,
+        "wires": [
+            [
+                "91509674f5dafa2c"
+            ]
+        ]
+    },
+    {
+        "id": "91509674f5dafa2c",
+        "type": "change",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "acellerometer_type",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 873,
+        "y": 791,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "02319405cd2fd47e",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Gateway local",
+        "func": "var lat = msg.payload.lat;\nvar lon = msg.payload.lon;\nmsg.payload = [{\n    measurement: \"gateway\",\n        fields: {\n            latitude: lat,  \n            longitude: lon\n        },\n    tags: {\n        sensorID: \"gateway\",\n        location: \"local_test\"\n    }\n}];\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 300,
+        "y": 360,
+        "wires": [
+            [
+                "7c50056a708b71bf"
+            ]
+        ]
+    },
+    {
+        "id": "c8581189e14ecef8",
+        "type": "inject",
+        "z": "d5133d8ebd591128",
+        "name": "1d",
+        "props": [
+            {
+                "p": "payload.lat",
+                "v": "41.7984077429178",
+                "vt": "num"
+            },
+            {
+                "p": "payload.lon",
+                "v": "-6.766607616185142",
+                "vt": "num"
+            }
+        ],
+        "repeat": "86400",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 90,
+        "y": 300,
+        "wires": [
+            [
+                "02319405cd2fd47e"
+            ]
+        ]
+    },
+    {
+        "id": "7c50056a708b71bf",
+        "type": "influxdb batch",
+        "z": "d5133d8ebd591128",
+        "influxdb": "203d5530d5db7950",
+        "precision": "",
+        "retentionPolicy": "",
+        "name": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "IPB",
+        "bucket": "IPB_TRACKER",
+        "x": 490,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "3e2d6cdb1917a2a8",
+        "type": "influxdb in",
+        "z": "d5133d8ebd591128",
+        "influxdb": "203d5530d5db7950",
+        "name": "BD",
+        "query": "from(bucket: \"IPB_TRACKER\")\n  |> range(start: -30m)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"gateway\")\n  |> filter(fn: (r) => r[\"_field\"] == \"rssi_lora\")",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "IPB",
+        "x": 328,
+        "y": 1774,
+        "wires": [
+            [
+                "de7baa3e3c930cc8"
+            ]
+        ]
+    },
+    {
+        "id": "de7baa3e3c930cc8",
+        "type": "switch",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "empty"
+            },
+            {
+                "t": "nempty"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 448.00000762939453,
+        "y": 1775.0000286102295,
+        "wires": [
+            [
+                "def94dee6e6ba0b8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "29f6b1191a636506",
+        "type": "comment",
+        "z": "d5133d8ebd591128",
+        "name": "Device did not send any data",
+        "info": "",
+        "x": 166,
+        "y": 1737.0000267028809,
+        "wires": []
+    },
+    {
+        "id": "d2c27f3ba1c1ff60",
+        "type": "delay",
+        "z": "d5133d8ebd591128",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "30",
+        "timeoutUnits": "minutes",
+        "rate": "1",
+        "nbRateUnits": "5",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 188,
+        "y": 1774,
+        "wires": [
+            [
+                "3e2d6cdb1917a2a8"
+            ]
+        ]
+    },
+    {
+        "id": "ed65951d4793f673",
+        "type": "link in",
+        "z": "d5133d8ebd591128",
+        "name": "link in 18",
+        "links": [
+            "1c9947274da5b28f",
+            "4a73456c50c4cfba"
+        ],
+        "x": 63,
+        "y": 1774,
+        "wires": [
+            [
+                "d2c27f3ba1c1ff60"
+            ]
+        ]
+    },
+    {
+        "id": "def94dee6e6ba0b8",
+        "type": "function",
+        "z": "d5133d8ebd591128",
+        "name": "Message",
+        "func": "msg.payload = {};\nmsg.payload.content = \"ATTENTION 🤔: the system has not received any information from the device for some time, something may have happened.\";\nmsg.payload.chatId = global.get(\"chatid\");\nmsg.payload.type = 'message';\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 579.0000228881836,
+        "y": 1770.0000286102295,
+        "wires": [
+            [
+                "0120bb1a25034040",
+                "871cbc2e59633115"
+            ]
+        ]
+    },
+    {
+        "id": "0120bb1a25034040",
+        "type": "telegram sender",
+        "z": "d5133d8ebd591128",
+        "name": "Send",
+        "bot": "ebf6f6f5ba0d66a8",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 718.0000267028809,
+        "y": 1783.0000276565552,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "871cbc2e59633115",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 19",
+        "mode": "link",
+        "links": [
+            "ed183c3ced744462"
+        ],
+        "x": 683.0000247955322,
+        "y": 1750.0000267028809,
+        "wires": []
+    },
+    {
+        "id": "4a73456c50c4cfba",
+        "type": "link out",
+        "z": "d5133d8ebd591128",
+        "name": "link out 20",
+        "mode": "link",
+        "links": [
+            "02b9b8491b4a63d9",
+            "ed65951d4793f673"
+        ],
+        "x": 202,
+        "y": 708,
+        "wires": []
+    },
+    {
+        "id": "02b9b8491b4a63d9",
+        "type": "link in",
+        "z": "d5133d8ebd591128",
+        "name": "link in 19",
+        "links": [
+            "4a73456c50c4cfba"
+        ],
+        "x": 148.00000095367432,
+        "y": 908.999981880188,
+        "wires": [
+            [
+                "491380b8ebdf3f14"
+            ]
+        ]
+    },
+    {
+        "id": "1c64be726d5e1436",
+        "type": "debug",
+        "z": "d5133d8ebd591128",
+        "name": "debug 66",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 215.8000030517578,
+        "y": 1022.3592767578125,
+        "wires": []
+    },
+    {
+        "id": "6501b05d5551870d",
+        "type": "debug",
+        "z": "d5133d8ebd591128",
+        "name": "debug 67",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 211.13671875,
+        "y": 575.4238375,
+        "wires": []
+    },
+    {
+        "id": "e83ab265ddccc0b6",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.mqtt-dashboard.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "203d5530d5db7950",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "IPB_TESE",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "ebf6f6f5ba0d66a8",
+        "type": "telegram bot",
+        "botname": "Bot teste",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    }
+]
